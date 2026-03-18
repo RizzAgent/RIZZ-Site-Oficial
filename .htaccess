@@ -1,0 +1,24 @@
+# 🌐 RIZZ - .htaccess (Configuração Locaweb / Apache)
+# Este arquivo ajuda a resolver o erro 500 caso o servidor esteja com má configuração de redirecionamento.
+
+# 1. Habilitar o motor de reescrita
+RewriteEngine On
+
+# 2. Forçar HTTPS (Ativar se o certificado SSL estiver ok)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 3. Cache de Browser para Performance (Opcional)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+  ExpiresByType text/html "access plus 1 day"
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+</IfModule>
+
+# 4. Solução de Erro 500 (Desativar diretivas que causam conflito na Locaweb)
+# Options -Indexes
+ErrorDocument 404 /index.html
