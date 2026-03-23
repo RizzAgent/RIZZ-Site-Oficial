@@ -36,35 +36,66 @@ if (form) {
     e.preventDefault();
     const btn = form.querySelector('button');
     const nome = document.getElementById('nome').value;
-    btn.textContent = `Obrigado, ${nome}. Retornaremos em breve.`;
-    btn.style.background = '#0B6E4F';
+    btn.textContent = `Protocolo iniciado, ${nome}.`;
+    btn.style.background = 'var(--sapphire-glow)';
+    btn.style.color = 'var(--preto)';
     btn.style.cursor = 'default';
     btn.disabled = true;
   });
 }
 
-// ── HOVER: Number Items Color ───────────────────────────
-document.querySelectorAll('.number-item').forEach(item => {
-  item.addEventListener('mouseenter', () => {
-    item.style.borderTopColor = 'rgba(11,110,79,0.8)';
+// ── NUMBERS: Count-Up Animation ──────────────────────────
+const animateNumbers = () => {
+  const nums = document.querySelectorAll('.number-val');
+  nums.forEach(num => {
+    const target = parseInt(num.textContent.replace(/\D/g, ''));
+    if (!isNaN(target) && target > 0) {
+      let count = 0;
+      const speed = target / 50;
+      const update = () => {
+        count += speed;
+        if (count < target) {
+          num.firstChild.textContent = Math.ceil(count);
+          setTimeout(update, 30);
+        } else {
+          num.firstChild.textContent = target;
+        }
+      };
+      update();
+    }
   });
-  item.addEventListener('mouseleave', () => {
-    item.style.borderTopColor = 'rgba(11,110,79,0.3)';
-  });
-});
+};
 
-// ── CURSOR SUBTLE GLOW (optional premium effect) ───────
+// Trigger count-up when section is visible
+const numSection = document.querySelector('.section-portfolio');
+if (numSection) {
+  const observerNum = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      animateNumbers();
+      observerNum.unobserve(numSection);
+    }
+  }, { threshold: 0.5 });
+  observerNum.observe(numSection);
+}
+
+// ── CURSOR SUBTLE GLOW (Sapphire Edition) ───────
 const cursor = document.createElement('div');
 cursor.style.cssText = `
   position:fixed; pointer-events:none; z-index:9999;
-  width:8px; height:8px; border-radius:50%;
-  background:rgba(11,110,79,0.6);
+  width:12px; height:12px; border-radius:50%;
+  background:var(--sapphire-glow);
   transform:translate(-50%,-50%);
   transition:transform 0.1s, opacity 0.3s;
   mix-blend-mode: screen;
+  box-shadow: 0 0 20px var(--sapphire-glow);
+  opacity: 0;
 `;
 document.body.appendChild(cursor);
+
 window.addEventListener('mousemove', e => {
+  cursor.style.opacity = '0.4';
   cursor.style.left = e.clientX + 'px';
   cursor.style.top = e.clientY + 'px';
 });
+
+document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
